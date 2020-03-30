@@ -23,7 +23,7 @@
 
 ##### Nick LoCastro
 
-##### Katelyn Designer
+##### Katelyn Rho
 
 ##### Sarah Selke
 
