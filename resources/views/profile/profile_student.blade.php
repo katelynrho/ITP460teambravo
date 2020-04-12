@@ -18,6 +18,7 @@
                 </div>
 
                 <div class="about__information__content">
+                    {{-- SARAH: you can do  <h3>{{$fullName}}</h3> here to use the $fullName you get from the show() function in profileController --}}
                     <div class="name"><h3>Jamie Chang</h3></div>
                     <div class="major-minor-container">
                         <span class="descriptor">Major</span>
@@ -34,7 +35,7 @@
             </div>
 
             <div class="row">
-                <div class="col-5">
+                <div class="col-sm-5 col-12">
                     <form class="about__subjects" method="POST" action="#">
                         @csrf
                         <div class="about__subjects__header">Subjects</div>
@@ -105,6 +106,7 @@
                     </div>
 
                     <form class="about__characteristics" method="POST" action="#">
+                        @csrf
                         <div class="about__characteristics__header">
                             Characteristics
                         </div>
@@ -120,26 +122,26 @@
                     <div class="about__buttons__container">
                         <button class="btn btn-lg">
                             <svg>
-                                <use xlink:href="{{asset('assets/sprite.svg#icon-magnifying-glass')}}"></use>
+                                <use xlink:href="{{asset('assets/sprite.svg#icon-cross')}}"></use>
                             </svg>
                             <span class="name">Friendly</span>
                         </button>
                         <button class="btn btn-lg">
                             <svg>
-                                <use xlink:href="{{asset('assets/sprite.svg#icon-magnifying-glass')}}"></use>
+                                <use xlink:href="{{asset('assets/sprite.svg#icon-cross')}}"></use>
                             </svg>
                             <span class="name">Patient</span>
                         </button>
                         <button class="btn btn-lg">
                             <svg>
-                                <use xlink:href="{{asset('assets/sprite.svg#icon-magnifying-glass')}}"></use>
+                                <use xlink:href="{{asset('assets/sprite.svg#icon-cross')}}"></use>
                             </svg>
                             <span class="name">Hospital</span>
                         </button>
                     </div>
 
                 </div>
-                <div class="col-7 reviews">
+                <div class="col-sm-7 col-12 reviews">
 
                 </div>
 

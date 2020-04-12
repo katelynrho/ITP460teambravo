@@ -5,14 +5,14 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\User;
+use App\Subject;
+use App\Characteristic;
 
 class testController extends Controller
 {
     public function test() {
-        $email = "safsa@afs";
-        $isTutor = User::where('email', '=', $email)->first()->is_tutor;
-        if($isTutor)
-            return redirect()->route('profile_tutor');
-        return redirect()->route('profile_student');
+
+        // Sarah: dd() is laravel's way of php's dump. In your browser, go to localhost:8000/test and then this function will run. Whenever you want to test syntax, the easiest way would be go to 'localhost:8000/test', and run your test inside this function. Use this function to play around with the Database syntax
+        dd(Characteristic::find(1)->users);
     }
 }
