@@ -80,71 +80,75 @@
     <div class="container">
         <div class="row home__container__notifications">
             <div class="col-12 col-sm-7 home__container__notifications__students">
-                <!-- the commented div is to display when there is no recommended tutors -->
-                <!-- <div class="home__container__notifications__title">
-                        <h5>No Recommended Tutors</h5>
+                {{-- @if(count($recommendations) == 0) --}}
+                @if(false)
+                    <!-- the commented div is to display when there is no recommended tutors -->
+                    <div class="home__container__notifications__title">
+                        <h5><span>No Recommended Tutors</span></h5>
                     </div>
                     <div class="home__container__notifications__text">
                         Add subjects or courses you want help in on Your Profile to receive tutor recommendations.
-                    </div> -->
-                <div class="home__container__notifications__title">
-                    <h5><span>Recommended Tutors</span> for ITP 104</h5>
-                </div>
-                <table class="table table-hover recommended__tutors">
-                    <tbody>
-                        <tr>
-                            <th scope="row"><img src="assets/mj.jpg" alt="tutor pic">Jeffrey M. </th>
-                            <td>
-                                <div>Freshman</div>
-                                <div>B.S. Chemical Engineering</div>
-                            </td>
-                            <td>
-                                <svg class="bookmark">
-                                    <use xlink:href="assets/sprite.svg#icon-bookmark"></use>
-                                </svg>
-                            </td>
+                    </div>
+                @else
+                    
+                    <div class="home__container__notifications__title">
+                        <h5><span>Recommended Tutors</span> for ITP 104</h5>
+                    </div>
+                    <table class="table table-hover recommended__tutors">
+                        <tbody>
+                            <tr>
+                                <th scope="row"><img src="assets/mj.jpg" alt="tutor pic">Jeffrey M. </th>
+                                <td>
+                                    <div>Freshman</div>
+                                    <div>B.S. Chemical Engineering</div>
+                                </td>
+                                <td>
+                                    <svg class="bookmark">
+                                        <use xlink:href="assets/sprite.svg#icon-bookmark"></use>
+                                    </svg>
+                                </td>
 
-                        </tr>
+                            </tr>
 
-                    </tbody>
-                </table>
-                <table class="table table-hover recommended__tutors">
-                    <tbody>
-                        <tr>
-                            <th scope="row"><img src="assets/mj.jpg" alt="tutor pic">Jeffrey M. </th>
-                            <td>
-                                <div>Freshman</div>
-                                <div>B.S. Chemical Engineering</div>
-                            </td>
-                            <td>
-                                <svg class="bookmark">
-                                    <use xlink:href="assets/sprite.svg#icon-bookmark"></use>
-                                </svg>
-                            </td>
+                        </tbody>
+                    </table>
+                    <table class="table table-hover recommended__tutors">
+                        <tbody>
+                            <tr>
+                                <th scope="row"><img src="assets/mj.jpg" alt="tutor pic">Jeffrey M. </th>
+                                <td>
+                                    <div>Freshman</div>
+                                    <div>B.S. Chemical Engineering</div>
+                                </td>
+                                <td>
+                                    <svg class="bookmark">
+                                        <use xlink:href="assets/sprite.svg#icon-bookmark"></use>
+                                    </svg>
+                                </td>
 
-                        </tr>
+                            </tr>
 
-                    </tbody>
-                </table>
-                <table class="table table-hover recommended__tutors">
-                    <tbody>
-                        <tr>
-                            <th scope="row"><img src="assets/mj.jpg" alt="tutor pic">Jeffrey M. </th>
-                            <td>
-                                <div>Freshman</div>
-                                <div>B.S. Chemical Engineering</div>
-                            </td>
-                            <td>
-                                <svg class="bookmark bookmark-marked">
-                                    <use xlink:href="assets/sprite.svg#icon-bookmark"></use>
-                                </svg>
-                            </td>
+                        </tbody>
+                    </table>
+                    <table class="table table-hover recommended__tutors">
+                        <tbody>
+                            <tr>
+                                <th scope="row"><img src="assets/mj.jpg" alt="tutor pic">Jeffrey M. </th>
+                                <td>
+                                    <div>Freshman</div>
+                                    <div>B.S. Chemical Engineering</div>
+                                </td>
+                                <td>
+                                    <svg class="bookmark bookmark-marked">
+                                        <use xlink:href="assets/sprite.svg#icon-bookmark"></use>
+                                    </svg>
+                                </td>
 
-                        </tr>
+                            </tr>
 
-                    </tbody>
-                </table>
-
+                        </tbody>
+                    </table>
+                
 
 
                 <div class="home__container__notifications__title">
@@ -205,21 +209,46 @@
                     </tbody>
                 </table>
 
-
+                @endif
 
             </div>
             <div class="col-12 col-sm-5 home__container__notifications__sessions change-student">
                 <div class="col-sm-12 col-6 _col-extra-small-12">
-                    <!-- <div class="home__container__notifications__title">
-                        <h5>No Upcoming Sessions</h5>
+                    @if(count($upcomingSessions) == 0)
+                    <div class="home__container__notifications__title">
+                        <h5><span>No Upcoming Sessions</span></h5>
                     </div>
                     <div class="home__container__notifications__text">
                         Scheduled sessions between you and a tutor will appear below.
-                    </div> -->
+                    </div>
+                    @else
                     <div class="home__container__notifications__title">
                         <h5><span>Upcoming Sessions</span></h5>
                     </div>
-                    <div class="session__container">
+                    @foreach ($upcomingSessions as $upcomingSession)
+                        <div class="session__container">
+                            <span class="title">{{$upcomingSession->full_name}}</span>
+                            <span class="descriptor">Date</span>
+                            <span class="descriptor">Subject / Course</span>
+                            <span class="text">
+                                {{date('m/d/Y', strtotime($upcomingSession->date))}}
+                            </span>
+                            @if($upcomingSession->is_course)
+                                <span class="text">{{App\Course::find($upcomingSession->course_id)->course}}</span>
+                            @else 
+                                <span class="text">{{App\Subject::find($upcomingSession->subject_id)->subject}}</span>
+                            @endif
+                            <span class="descriptor">Time</span>
+                            <span class="descriptor">Hourly Rate</span>
+                            <span class="text">
+                                {{$upcomingSession->start_time}} - {{$upcomingSession->end_time}}
+                            </span>
+                            <span class="text">${{$upcomingSession->hourly_rate}} / hr</span>
+                            <button class="btn btn-lg btn-outline-primary">Cancel Session</button>
+                            <button class="btn btn-lg btn-primary">View Session</button>
+                        </div>
+                    @endforeach
+                    {{-- <div class="session__container">
                         <span class="title">Tutor Name</span>
                         <span class="descriptor">Date</span>
                         <span class="descriptor">Subject / Course</span>
@@ -232,25 +261,48 @@
                         <button class="btn btn-lg btn-outline-primary">Cancel Session</button>
                         <button class="btn btn-lg btn-primary">View Session</button>
                     </div>
-                    <div class="session__container">
-                        <span class="title">Tutor Name</span>
-                        <span class="descriptor">Date</span>
-                        <span class="descriptor">Subject / Course</span>
-                        <span class="text">02/20/2020</span>
-                        <span class="text">ITP 104</span>
-                        <span class="descriptor">Time</span>
-                        <span class="descriptor">Hourly Rate</span>
-                        <span class="text">5 - 6pm</span>
-                        <span class="text">$16 / hr</span>
-                        <button class="btn btn-lg btn-outline-primary">Cancel Session</button>
-                        <button class="btn btn-lg btn-primary">View Session</button>
-                    </div>
+                    --}}
+                    @endif
                 </div>
+
                 <div class="col-sm-12 col-6 _col-extra-small-12">
+                    @if(count($pastTutors) == 0)
                     <div class="home__container__notifications__title">
-                        <h5><span>Your Tutors</span></h5>
+                        <h5><span>No Past Tutors</span></h5>
                     </div>
+                    <div class="home__container__notifications__text">
+                        The last two tutors will appear below.
+                    </div>
+                    @else
+                    <div class="home__container__notifications__title">
+                        <h5><span>Past Tutors</span></h5>
+                    </div>
+                    @foreach ($pastTutors as $pastTutor)
                     <div class="tutor-container">
+                        <div class="img-container"><img src="assets/mj.jpg" alt="tutor pic"></div>
+                        <div class="tutor__info">
+                            <div>{{$pastTutor->full_name}}</div>
+                            <div>Last Session: 
+                                {{date('m/d/Y', strtotime($pastTutor->date))}}
+                            </div>
+                            <div>Total Sessions: 
+                                <span>{{$pastTutor->count}}</span>
+                            </div>
+                        </div>
+                        <div class="bookmark-container">
+                            <svg class="bookmark">
+                                <use xlink:href="assets/sprite.svg#icon-bookmark"></use>
+                            </svg>
+                        </div>
+                        <div class="btn-container">
+                            <button class="btn btn-lg btn-outline-primary btn-view-past-session">Past Session</button>
+                            <button class="btn btn-lg btn-primary btn-view-profile">View Profile</button>
+                        </div>
+
+                    </div>
+                    @endforeach
+
+                    {{-- <div class="tutor-container">
                         <div class="img-container"><img src="assets/mj.jpg" alt="tutor pic"></div>
                         <div class="tutor__info">
                             <div>Tutor Name</div>
@@ -267,24 +319,8 @@
                             <button class="btn btn-lg btn-primary btn-view-profile">View Profile</button>
                         </div>
 
-                    </div>
-                    <div class="tutor-container">
-                        <div class="img-container"><img src="assets/mj.jpg" alt="tutor pic"></div>
-                        <div class="tutor__info">
-                            <div>Tutor Name</div>
-                            <div>Last Session: 00/00/00</div>
-                            <div>Total Sessions: <span>5</span></div>
-                        </div>
-                        <div class="bookmark-container">
-                            <svg class="bookmark">
-                                <use xlink:href="assets/sprite.svg#icon-bookmark"></use>
-                            </svg>
-                        </div>
-                        <div class="btn-container">
-                            <button class="btn btn-lg btn-outline-primary btn-view-past-session">Past Session</button>
-                            <button class="btn btn-lg btn-primary btn-view-profile">View Profile</button>
-                        </div>
-                    </div>
+                    </div> --}}
+                    @endif
                 </div>
             </div>
         </div>
