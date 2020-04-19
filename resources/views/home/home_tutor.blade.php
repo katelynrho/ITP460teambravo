@@ -8,27 +8,35 @@
 </div>
 @endsection
 
-@section('body-class') 
+@section('body-class')
 min-width-450
 @endsection
 
 
 @section('add-post-container')
-<div id="add-post-container">
+<form id="add-post-container">
     <h3>Write a Post</h3>
     <textarea name="post-content" id="post-content" placeholder="Begin typing post here."></textarea>
     <small class="subject-course">Subject / Course</small>
     <div class="add-post-bottom">
         <select class="custom-select custom-select-lg " name="add-post-course-subject" id="add-post-course-subject">
             <option selected="true" disabled="disabled">Select</option>
-            <option value="ITP 104">ITP 104</option>
-            <option value="Calculus">Calculus</option>
+            @if(count($interestedCourses) === 0 && count($interestedSubjects) === 0)
+                <option disabled="disabled">Please first add interested courses/subjects in profile page.</option>
+            @else
+                @foreach ($interestedCourses as $interestedCourse)
+                    <option value="course-{{$interestedCourse->id}}">{{$interestedCourse->course}}</option>
+                @endforeach
+                @foreach ($interestedSubjects as $interestedSubject)
+                    <option value="subject-{{$interestedSubject->id}}">{{$interestedSubject->subject}}</option>
+                @endforeach
+            @endif
         </select>
         <button class="btn btn-lg btn-outline-primary btn-cancel">Cancel</button>
-        <button class="btn btn-lg btn-primary btn-post">Post</button>
+        <button class="btn btn-lg btn-primary btn-post" type="submit">Post</button>
     </div>
 
-</div>
+</form>
 @endsection
 
 @section('content')
@@ -37,10 +45,10 @@ min-width-450
             <div class="container home__container__header__content">
                 <div class="home__container__header__content__text">
                     <div class="home__container__header__content__text__header">
-                        <h2>Welcome Jeffrey!</h2>
+                        <h2>Welcome {{Auth::user()->full_name}}!</h2>
                     </div>
                     <div class="home__container__header__content__text__descriptor">
-                        <small>You have X unread message & Y Tutor Request(s)</small>
+                        <small>You have X unread message & {{count($tutorRequests)}} Tutor Request(s)</small>
                     </div>
                 </div>
                 <div class="home__container__header__content__img">
@@ -76,7 +84,7 @@ min-width-450
                             d="M131 2L135.289 7.89732C136.309 9.29992 136.309 11.2001 135.289 12.6027L132.711 16.1473C131.691 17.5499 131.691 19.4501 132.711 20.8527L135.289 24.3973C136.309 25.7999 136.309 27.7001 135.289 29.1027L131 35"
                             stroke="#FFC077" stroke-width="4" stroke-linecap="round" />
                     </svg>
-    
+
                 </div>
             </div>
         </div>
@@ -94,105 +102,116 @@ min-width-450
                         Calendar functionality is coming soon!
                     </div>
                 </div>
-                <div class="col-12 col-sm-5 home__container__notifications__sessions">
-                    <div class="home__container__notifications__title pl-0 pr-0 mb-0">
-                        <h5><span>Upcoming Sessions</span></h5>
-                    </div>
-                    <div class="session__container">
-                        <span class="title">Student Name</span>
-                        <span class="descriptor">Date</span>
-                        <span class="descriptor">Subject / Course</span>
-                        <span class="text">02/20/2020</span>
-                        <span class="text">ITP 104</span>
-                        <span class="descriptor">Time</span>
-                        <span class="descriptor">Hourly Rate</span>
-                        <span class="text">5 - 6pm</span>
-                        <span class="text">$16 / hr</span>
-                        <button class="btn btn-lg btn-outline-primary">Cancel Session</button>
-                        <button class="btn btn-lg btn-primary">View Session</button>
-                    </div>
-                    <div class="session__container">
-                        <span class="title">Student Name</span>
-                        <span class="descriptor">Date</span>
-                        <span class="descriptor">Subject / Course</span>
-                        <span class="text">02/20/2020</span>
-                        <span class="text">ITP 104</span>
-                        <span class="descriptor">Time</span>
-                        <span class="descriptor">Hourly Rate</span>
-                        <span class="text">5 - 6pm</span>
-                        <span class="text">$16 / hr</span>
-                        <button class="btn btn-lg btn-outline-primary">Cancel Session</button>
-                        <button class="btn btn-lg btn-primary">View Session</button>
-                    </div>
+                <div class="col-12 col-sm-5 home__container__notifications__sessions home__container__notifications__sessions-tutor">
+                    @if(count($upcomingSessions) == 0)
+                        <div class="home__container__notifications__title pl-0 pr-0 mb-0">
+                            <h5><span>No Upcoming Sessions</span></h5>
+                        </div>
+                        <div class="home__container__notifications__text">
+                            Scheduled sessions between you and a tutor will appear below.
+                        </div>
+                    @else
+                        <div class="home__container__notifications__title pl-0 pr-0 mb-0">
+                            <h5><span>Upcoming Sessions</span></h5>
+                        </div>
+                        @foreach ($upcomingSessions as $upcomingSession)
+                            <div class="session__container" data-user-id="{{$upcomingSession->session_id}}">
+                                <span class="title">{{$upcomingSession->full_name}}</span>
+                                <span class="descriptor">Date</span>
+                                <span class="descriptor">Subject / Course</span>
+                                <span class="text">
+                                    {{date('m/d/Y', strtotime($upcomingSession->date))}}
+                                </span>
+                                @if($upcomingSession->is_course)
+                                    <span class="text">{{App\Course::find($upcomingSession->course_id)->course}}</span>
+                                @else
+                                    <span class="text">{{App\Subject::find($upcomingSession->subject_id)->subject}}</span>
+                                @endif
+                                <span class="descriptor">Time</span>
+                                <span class="descriptor">Hourly Rate</span>
+                                <span class="text">
+                                    {{$upcomingSession->start_time}} - {{$upcomingSession->end_time}}
+                                </span>
+                                <span class="text">${{$upcomingSession->hourly_rate}} / hr</span>
+                                <button class="btn btn-lg btn-outline-primary">Cancel Session</button>
+                                <button class="btn btn-lg btn-primary">View Session</button>
+                            </div>
+
+                        @endforeach
+                    @endif
 
                 </div>
             </div>
 
             <div class="home__tutor-requests home__container__notifications__title">
+                @if(count($tutorRequests) === 0)
+                    <div class="home__tutor-requests__header">
+                        <h5>Tutor Requests <span class="home__tutor-requests__header--num"></span></h5>
+                    </div>
+                    <div class="home__tutor-requests__content ">
+                        There is no tutor requests currently. Add a post to make more people know you!
+                    </div>
+                @else
                 <div class="home__tutor-requests__header">
-                    <h5>Tutor Requests <span class="home__tutor-requests__header--num">(2)</h5></span>
+                    <h5>Tutor Requests <span class="home__tutor-requests__header--num">({{count($tutorRequests)}})</span></h5>
                 </div>
                 <div class="home__tutor-requests__content">
                     Click on the panel if you want to view the request in Messages.
                 </div>
 
-                <table class="table table-hover tutor-requests-table">
-                    <tbody>
-                        <tr>
-                            <th scope="row"><img src="assets/mj.jpg" alt="tutor pic"><small class="bold">Student Name</small></th>
-
-                            <td>
-                                <div class="labels">Date</div>
-                                <small class="bold">Wednesday, March 15, 2020</small>
-                            </td>
-                            <td>
-                                <div class="labels">Subject / Course</div>
-                                <small class="bold">ITP 104</small>
-                            </td>
-                            <td>
-                                <div class="labels">Start Time</div>
-                                <small class="bold">4:30pm</small>
-                            </td>
-                            <td>
-                                <div class="labels">End Time</div>
-                                <small class="bold">6:00pm</small>
-                            </td>
-                            <td class="text-center">
-                                <button class="btn btn-lg btn-outline-primary"><small>Decline</small></button>
-                                <button class="btn btn-lg btn-primary"><small>Accept</small></button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <table class="table table-hover tutor-requests-table">
-                    <tbody>
-                        <tr>
-                            <th scope="row"><img src="assets/mj.jpg" alt="tutor pic"><small class="bold">Student Name</small></th>
-                            <td>
-                                <div class="labels">Date</div>
-                                <small class="bold">Wednesday, March 15, 2020</small>
-                            </td>
-                            <td>
-                                <div class="labels">Subject / Course</div>
-                                <small class="bold">ITP 104</small>
-                            </td>
-                            <td>
-                                <div class="labels">Start Time</div>
-                                <small class="bold">4:30pm</small>
-                            </td>
-                            <td>
-                                <div class="labels">End Time</div>
-                                <small class="bold">6:00pm</small>
-                            </td>
-                            <td class="text-center">
-                                <button class="btn btn-lg btn-outline-primary"><small>Decline</small></button>
-                                <button class="btn btn-lg btn-primary"><small>Accept</small></button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-
-
+                    @foreach ($tutorRequests as $tutorRequest)
+                        <table class="table table-hover tutor-requests-table" data-tutor-request-id='{{$tutorRequest->tutor_request_id}}'>
+                            <tbody>
+                                <tr>
+                                    <th scope="row">
+                                        <img src="assets/mj.jpg" alt="tutor pic">
+                                        <small class="bold">{{$tutorRequest->full_name}}</small>
+                                    </th>
+                                    <td>
+                                        <div class="labels">Date</div>
+                                        <small class="bold">
+                                            {{
+                                                date('m/d/Y', strtotime($tutorRequest->tutor_session_date))
+                                            }}
+                                        </small>
+                                    </td>
+                                    <td>
+                                        <div class="labels">Subject / Course</div>
+                                        @if($tutorRequest->is_course_request)
+                                            <small class="bold">
+                                                {{$tutorRequest->course}}
+                                            </small>
+                                        @else
+                                            <small class="bold">
+                                                {{$tutorRequest->subject}}
+                                            </small>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <div class="labels">Start Time</div>
+                                        <small class="bold">
+                                            {{$tutorRequest->start_time}}
+                                        </small>
+                                    </td>
+                                    <td>
+                                        <div class="labels">End Time</div>
+                                        <small class="bold">
+                                            {{$tutorRequest->end_time}}
+                                        </small>
+                                    </td>
+                                    <td class="text-center">
+                                        <button class="btn btn-lg btn-outline-primary" data-tutor-request-id='{{$tutorRequest->tutor_request_id}}'>
+                                            <small>Decline</small>
+                                        </button>
+                                        <button class="btn btn-lg btn-primary" data-tutor-request-id='{{$tutorRequest->tutor_request_id}}'>
+                                            <small>Accept</small>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    @endforeach
+                @endif
             </div>
 
             <div class="row home__container__help-center">
@@ -201,102 +220,67 @@ min-width-450
                         <div>
                             <h5 class="home__container__help-center__header__text">Dashboard</h5>
                             <form class="home__container__help-center__filter-container" id="filter-form" method="GET"
-                                action="/home_filter">
+                                action="#">
                                 <div class="select-container">
-                                    <select class="custom-select custom-select-lg filter-post" name="filter-post"
+                                    <select class="custom-select custom-select-lg filter-post" name="filter-post-course-subject"
                                         id="search-courses-subjects">
                                         <option value="all-courses-subjects" selected>All Courses / Subjects</option>
                                         <option value="my-courses-subjects">My Courses / Subjects</option>
                                     </select>
-                                    <select class="custom-select custom-select-lg filter-post" name="filter-post"
+                                    <select class="custom-select custom-select-lg filter-post" name="filter-post-tutor-student"
                                         id="search-posts">
-                                        <option selected>All Posts</option>
+                                        <option value="tutor-student-posts" selected>Tutor & Student Posts</option>
                                         <option value="tutor-posts">Tutor Posts</option>
                                         <option value="student-posts">Student Posts</option>
+                                        <option value="my-posts">My Posts</option>
                                     </select>
                                 </div>
-    
+
                                 <button class="btn btn-primary btn-search" id="btn-search" type="submit">Search</button>
                             </form>
                         </div>
-    
+
                         <div>
                             <button class="btn btn-lg btn-outline-primary" id="add-post">Add Post +</button>
-    
+
                         </div>
-    
+
                     </div>
                     <table class="table table-hover home__container__help-center__table">
                         <tbody>
-                            <tr>
-                                <th scope="row"><img src="assets/mj.jpg" alt="tutor pic"> Jeffrey Miller </th>
+                            @foreach ($posts as $post)
+                            <tr data-post-id="{{$post->post_id}}">
+                                <th scope="row">
+                                    <img src="assets/mj.jpg" alt="tutor pic">
+                                    {{$post->full_name}}
+                                </th>
                                 <td>
-                                    <p>00/00/00</p><span>ITP 104</span>
+                                    <p>
+                                        {{$post->post_created_time}}
+                                    </p>
+                                    <span>
+                                        @if($post->is_course_post)
+                                        {{$post->course}}
+                                        @else
+                                        {{$post->subject}}
+                                        @endif
+                                    </span>
                                 </td>
-                                <td>I have an upcoming midterm for ITP 104 next Tuesday. Would anyone be available to help
-                                    me this weekend?</td>
-                                <td><button class="btn btn-lg btn-primary button--small">Send Message</button></td>
-                            </tr>
-                            <tr>
-                                <th scope="row"><img src="assets/mj.jpg" alt="tutor pic"> Jeffrey Miller </th>
+                                <td class="post-message">
+                                    {{$post->post_message}}
+                                </td>
                                 <td>
-                                    <p>00/00/00</p><span>ITP 104</span>
+                                    <button class="btn btn-lg btn-primary button--small" data-post-id="{{$post->post_id}}">
+                                        Send Message
+                                    </button>
                                 </td>
-                                <td>I have an upcoming midterm for ITP 104 next Tuesday. Would anyone be available to help
-                                    me this weekend?</td>
-                                <td><button class="btn btn-lg btn-primary button--small">Send Message</button></td>
                             </tr>
-                            <tr>
-                                <th scope="row"><img src="assets/mj.jpg" alt="tutor pic"> Jeffrey Miller </th>
-                                <td>
-                                    <p>00/00/00</p><span>ITP 104</span>
-                                </td>
-                                <td>I have an upcoming midterm for ITP 104 next Tuesday. Would anyone be available to help
-                                    me this weekend?</td>
-                                <td><button class="btn btn-lg btn-primary button--small">Send Message</button></td>
-                            </tr>
-                            <tr>
-                                <th scope="row"><img src="assets/mj.jpg" alt="tutor pic"> Jeffrey Miller </th>
-                                <td>
-                                    <p>00/00/00</p><span>ITP 104</span>
-                                </td>
-                                <td>I have an upcoming midterm for ITP 104 next Tuesday. Would anyone be available to help
-                                    me this weekend?</td>
-                                <td><button class="btn btn-lg btn-primary button--small">Send Message</button></td>
-                            </tr>
-                            <tr>
-                                <th scope="row"><img src="assets/mj.jpg" alt="tutor pic"> Jeffrey Miller </th>
-                                <td>
-                                    <p>00/00/00</p><span>ITP 104</span>
-                                </td>
-                                <td>I have an upcoming midterm for ITP 104 next Tuesday. Would anyone be available to help
-                                    me this weekend?</td>
-                                <td><button class="btn btn-lg btn-primary button--small">Send Message</button></td>
-                            </tr>
-                            <tr>
-                                <th scope="row"><img src="assets/mj.jpg" alt="tutor pic"> Jeffrey Miller </th>
-                                <td>
-                                    <p>00/00/00</p><span>ITP 104</span>
-                                </td>
-                                <td>I have an upcoming midterm for ITP 104 next Tuesday. Would anyone be available to help
-                                    me this weekend?</td>
-                                <td><button class="btn btn-lg btn-primary button--small">Send Message</button></td>
-                            </tr>
-                            <tr>
-                                <th scope="row"><img src="assets/mj.jpg" alt="tutor pic"> Jeffrey Miller </th>
-                                <td>
-                                    <p>00/00/00</p><span>ITP 104</span>
-                                </td>
-                                <td>I have an upcoming midterm for ITP 104 next Tuesday. Would anyone be available to help
-                                    me this weekend?</td>
-                                <td><button class="btn btn-lg btn-primary button--small">Send Message</button></td>
-                            </tr>
+                            @endforeach
                         </tbody>
                     </table>
-    
+
                 </div>
             </div>
-
         </div>
 
 
@@ -309,10 +293,9 @@ min-width-450
     @endsection
 
     @section('js')
-    
+
     <!-- defined javascript -->
     <script src="js/home_tutor.js"></script>
     <script src="js/home_common.js"></script>
-    
+
     @endsection
-    

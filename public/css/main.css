@@ -11096,6 +11096,10 @@ svg.bookmark:hover {
   min-width: 450px;
 }
 
+.flex-1 {
+  flex: 1;
+}
+
 button,
 a.btn {
   color: #f7fbfd !important;
@@ -11340,6 +11344,7 @@ a.btn.btn-primary {
   box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.08);
   border-radius: 10px;
   padding-bottom: 1.5rem;
+  color: black;
   font-size: 1.6rem;
 }
 
@@ -11453,10 +11458,14 @@ a.btn.btn-primary {
 }
 
 .tutor-container .bookmark-container svg {
-  fill: #ffdc60;
+  fill: #9a9a9a;
   z-index: 100;
   width: 2rem;
   height: 2rem;
+}
+
+.tutor-container .bookmark-container svg.bookmark-marked {
+  fill: #ffdc60;
 }
 
 .tutor-container .tutor__info {
@@ -12541,6 +12550,11 @@ h5 .fgpwd-container__header-2 {
   }
 }
 
+.home__container__notifications__sessions-tutor {
+  display: block;
+  flex-wrap: nowrap;
+}
+
 .home__container__notifications .recommended__tutors {
   font-size: 1.6rem;
   background-color: #ffffff;
@@ -12699,11 +12713,11 @@ h5 .fgpwd-container__header-2 {
 
 .home__container__help-center__table tr > * {
   vertical-align: middle !important;
+  white-space: nowrap;
 }
 
 .home__container__help-center__table tr > :nth-child(1) {
   white-space: nowrap;
-  text-align: center;
   font-size: 1.6rem;
 }
 
@@ -12711,10 +12725,6 @@ h5 .fgpwd-container__header-2 {
   .home__container__help-center__table tr > :nth-child(1) {
     white-space: normal;
   }
-}
-
-.home__container__help-center__table tr > :nth-child(2) {
-  text-align: center;
 }
 
 .home__container__help-center__table tr > :nth-child(2) p {
@@ -12730,6 +12740,11 @@ h5 .fgpwd-container__header-2 {
 
 .home__container__help-center__table tr > :nth-child(3) {
   font-size: 1.5rem;
+}
+
+.home__container__help-center__table .post-message {
+  width: 99%;
+  white-space: normal;
 }
 
 .home__container__help-center__table button {
@@ -13315,10 +13330,6 @@ table img {
   color: #9a9a9a;
 }
 
-.search-container {
-  margin-top: 3rem;
-}
-
 .search-container .search__box {
   margin-top: 2rem;
   border: 1px solid #9a9a9a;
@@ -13364,6 +13375,7 @@ table img {
 .search-container .filter-container {
   display: flex;
   margin-top: 0.5rem;
+  color: black;
 }
 
 .search-container .filter-container .filter-box {
