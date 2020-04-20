@@ -5,7 +5,7 @@
 
 
 <div class="container signup-container" id="signup_tutor_container">
-    <form action="/signup_tutor_2" method="POST" class="signup-container__form text-center">
+    <form action="/signup_tutor_2" method="POST" class="signup-container__form text-center" enctype="multipart/form-data">
         @csrf
         <div class="signup-container__form__header">
             <h1 class="heading-color">Sign up to be a Tutor</h1>
@@ -42,11 +42,11 @@
                     @enderror
                 </div>
 
-                
+
             </div>
 
             <div class="col p-relative">
-               
+
                 <div class="signup-container__form__group">
                     <input type="text" id="minor" name="minor" placeholder="Minor" value="{{ old('minor') }}">
                     <label for="minor"><small>Minor</small></label>
@@ -66,9 +66,9 @@
                 </div>
 
                 <div class="file-input-group">
-                    <label for="profile-pic" class="label-upload"><span>Upload Profile Image</span></label>
+                    <label for="profile-pic" class="label-upload"><span id="file-input-text">Upload Profile Image</span></label>
 
-                    <input type="file" id="profile-pic" name="profile-pic" placeholder="Upload Profile Picture">
+                    <input type="file" id="profile-pic" name="profile-pic" accept="image/*" placeholder="Upload Profile Picture">
 
 
                 </div>
@@ -76,7 +76,7 @@
                 <span class="error error-right error-input-file">{{$message}}</span>
                 @enderror
 
-                
+
 
             </div>
         </div>
@@ -98,6 +98,7 @@
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
 <script src="{{asset('js/signup.js')}}"></script>
 
 @endsection

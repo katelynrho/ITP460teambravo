@@ -4,14 +4,34 @@ $('.home__container__notifications__sessions .session__container > button:last-c
 });
 
 
-// select cancel session
+// cancel session
 $('.home__container__notifications__sessions .session__container > button:not(:last-child)').click(function () {
-    alert('TODO: cancel session');
+    let sessionId = $(this).attr('data-session-id');
 
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
 
+    $.ajax({
+        type:'POST',
+        url: `/session_cancel`,
+        data: {
+            session_id: sessionId
+        },
+        success: (data) => {
+            let { successMsg } = data;
+            toastr.success(successMsg);
+            window.location.href = '/home';
+        },
+        error: function(error) {
+            console.log(error);
+            toastr.error(error);
+        }
+    });
 
 });
-
 
 
 
@@ -21,9 +41,11 @@ $('#add-post').click(() => {
 });
 
 // cancel button for post
-$('#add-post-container .btn-cancel').click(() => {
+$('#add-post-container .btn-cancel').click((e) => {
+    e.preventDefault();
     $('#background-cover').hide();
 });
+
 
 // add post
 $('#add-post-container').submit((e) => {
@@ -41,8 +63,15 @@ $('#add-post-container').submit((e) => {
         toastr.warning('Please select which course/subject your post is about!');
         return;
     }
+
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
     $.ajax({
-        type:'GET',
+        type:'POST',
         url: '/dashboard_add',
         data: {
             postMsg: postMsg,
@@ -65,8 +94,6 @@ $('#add-post-container').submit((e) => {
             toastr.error(error);
         }
     });
-
-
 });
 
 
@@ -94,7 +121,7 @@ $('#filter-form').submit(function(e) {
             posts.forEach(post => {
                 let imgUrl = 'assets/mj.jpg';
                 let fullName = post.full_name;
-                let dateCreated = post.post_created_time;
+
                 let courseSubjectName;
                 if(post.is_course_post)
                     courseSubjectName = post.course;
@@ -103,6 +130,10 @@ $('#filter-form').submit(function(e) {
 
                 let postMsg = post.post_message;
                 let postId = post.post_id;
+
+                let dateCreated = post.post_created_time;
+                dateCreated = $.datepicker.formatDate('mm/dd/yy', new Date(dateCreated));
+
 
                 let element = `
                     <tr data-post-id="${postId}">
@@ -155,6 +186,11 @@ function showAddPost() {
     );
 
     $('#add-post-container').height($(window).height() / 2);
+}
+
+
+function success(successMsg) {
+    toastr.success(successMsg);
 }
 
 

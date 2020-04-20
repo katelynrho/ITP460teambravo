@@ -60,19 +60,43 @@ Route::get('/logout', 'loginController@logout')->name('logout')->middleware(['ch
 
 
 // home page
-Route::get('/home', 'homeController@show')->name('home_student')->middleware(['checkLogin']);
+Route::get('/home', 'homeController@show')->name('home')->middleware(['checkLogin']);
 
 
 // search page
 Route::get('/search', 'searchController@show')->name('search')->middleware(['checkLogin']);
 
 
-// bookmark (no need for login middleware)
+// bookmark
 Route::get('/bookmark_remove', 'generalController@removeBookmark')->middleware(['checkLogin']);
 Route::get('/bookmark_add', 'generalController@addBookmark')->middleware(['checkLogin']);
 
 
-// dashboard (no need for login middleware)
+// dashboard
 Route::get('/dashboard', 'generalController@getDashboardPosts')->middleware(['checkLogin']);
-Route::get('/dashboard_add', 'generalController@addDashboardPosts')->middleware(['checkLogin']);
+Route::post('/dashboard_add', 'generalController@addDashboardPosts')->middleware(['checkLogin']);
+
+// tutor requests
+Route::post('/tutor_request_reject', 'generalController@rejectTutorRequest')->middleware(['checkLogin']);
+Route::post('/tutor_request_accept', 'generalController@acceptTutorRequest')->middleware(['checkLogin']);
+
+// sessions
+Route::post('/session_cancel', 'generalController@cancelSession')->middleware(['checkLogin']);
+
+
+// subjects
+Route::post('/remove_fav_subject', 'subjectController@removeFavSubject')->middleware(['checkLogin']);
+Route::post('/add_fav_subject', 'subjectController@addFavSubject')->middleware(['checkLogin']);
+
+// courses
+Route::post('/remove_fav_course', 'courseController@removeFavCourse')->middleware(['checkLogin']);
+Route::post('/add_fav_course', 'courseController@addFavCourse')->middleware(['checkLogin']);
+
+// characteristics
+Route::post('/remove_characteristic', 'characteristicController@removeCharacteristic')->middleware(['checkLogin']);
+Route::post('/add_characteristic', 'characteristicController@addCharacteristic')->middleware(['checkLogin']);
+
+// reviews
+Route::post('/post_review', 'reviewController@postReview')->middleware(['checkLogin']);
+
 

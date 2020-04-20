@@ -11173,11 +11173,24 @@ a.btn.btn-primary {
   margin-top: 2rem;
   font-size: 1.6rem;
   background-color: #ffffff;
+  border-radius: 10px;
   display: block;
+}
+
+.reviews-table * {
+  border-top: none !important;
+}
+
+.reviews-table tbody,
+.reviews-table tr {
+  display: flex;
+  flex: 1;
 }
 
 .reviews-table tr {
   height: 10rem;
+  align-items: center;
+  box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.08);
 }
 
 .reviews-table tr > * {
@@ -11186,6 +11199,9 @@ a.btn.btn-primary {
 
 .reviews-table tr > :nth-child(2) {
   white-space: nowrap;
+  min-width: 15%;
+  display: block;
+  text-align: center;
 }
 
 .reviews-table .time-sent {
@@ -11204,6 +11220,7 @@ a.btn.btn-primary {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex: 1;
 }
 
 .reviews-table .review-content {
@@ -11211,10 +11228,8 @@ a.btn.btn-primary {
   overflow: scroll;
   font-size: 1.5rem;
   margin-bottom: 0;
-}
-
-.reviews-table .review-content::-webkit-scrollbar {
-  display: none;
+  margin-left: 1rem;
+  margin-right: 1rem;
 }
 
 .reviews-table .review-star__container {
@@ -11333,6 +11348,8 @@ a.btn.btn-primary {
 
 .search-card-container {
   margin-top: 2rem;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
 }
 
 .search-card-container .search-card-flex-container .search-card {
@@ -11384,7 +11401,6 @@ a.btn.btn-primary {
   position: relative;
   height: 2rem;
   white-space: nowrap;
-  letter-spacing: 1px;
 }
 
 .search-card-container .search-card-flex-container .search-card .star-container .star {
@@ -11417,6 +11433,12 @@ a.btn.btn-primary {
 
 .search-card-container .search-card-flex-container .search-card .name {
   font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+.search-card-container .search-card-flex-container .search-card .name,
+.search-card-container .search-card-flex-container .search-card .major {
+  white-space: nowrap;
 }
 
 .search-card-container .search-card-flex-container .search-card .subjects {
@@ -11734,6 +11756,34 @@ a.btn.btn-primary {
 
 .nav-login .nav-container .user-photo-container img:hover {
   cursor: pointer;
+}
+
+@media only screen and (max-width: 68.75em) {
+  .nav-login .nav-container .user-photo-container img {
+    width: 4.5rem;
+    height: 4.5rem;
+  }
+}
+
+@media only screen and (max-width: 56.25em) {
+  .nav-login .nav-container .user-photo-container img {
+    height: 4rem;
+    width: 4rem;
+  }
+}
+
+@media only screen and (max-width: 46.875em) {
+  .nav-login .nav-container .user-photo-container img {
+    width: 3.5rem;
+    height: 3.5rem;
+  }
+}
+
+@media only screen and (max-width: 40.625em) {
+  .nav-login .nav-container .user-photo-container img {
+    height: 3.2rem;
+    width: 3.2rem;
+  }
 }
 
 .nav-login .nav-container .user-photo-container .nav__dropdown-container {
@@ -12838,7 +12888,7 @@ table img {
 
 #background-cover #add-post-container textarea {
   display: block;
-  font-size: 2.2rem;
+  font-size: 2rem;
   outline: none;
   width: 100%;
   margin-top: 2rem;
@@ -12858,7 +12908,7 @@ table img {
 }
 
 #background-cover #add-post-container .add-post-bottom * {
-  font-size: 2.2rem;
+  font-size: 2rem;
 }
 
 #background-cover #add-post-container .add-post-bottom select {
@@ -12908,12 +12958,20 @@ table img {
 
 .about__information__img {
   flex: 0 0 25%;
+  height: 100%;
+  display: flex;
+  align-items: center;
 }
 
-.about__information__img img {
+.about__information__img .img-container {
   width: 100%;
-  border-radius: 50%;
   padding: 2rem;
+}
+
+.about__information__img .img-container img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
 }
 
 .about__information__content {
@@ -12964,6 +13022,10 @@ table img {
   font-size: 2rem;
   width: 40%;
   margin-right: 9%;
+}
+
+.about__information + div {
+  margin-bottom: 5rem;
 }
 
 .about__subjects__header,
@@ -13092,6 +13154,10 @@ table img {
   margin-top: 1rem;
 }
 
+.sessions__container .session__container {
+  max-width: 50%;
+}
+
 .saved__container {
   color: black;
   margin-top: 3rem;
@@ -13142,6 +13208,8 @@ table img {
 }
 
 .reviews__container .subject-container {
+  min-width: 15%;
+  display: block;
   text-align: center;
 }
 
@@ -13153,6 +13221,100 @@ table img {
 .saved__container,
 .reviews__container {
   display: none;
+}
+
+#background-cover #write-review-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 10px;
+  width: 50%;
+  background-color: white;
+  padding: 2rem 4rem;
+  color: black;
+  display: flex;
+  flex-direction: column;
+}
+
+#background-cover #write-review-container .title {
+  margin-bottom: 2rem;
+}
+
+#background-cover #write-review-container .info-container .info-row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+#background-cover #write-review-container .info-container .info-row > * {
+  flex: 50%;
+}
+
+#background-cover #write-review-container .info-container .info-row .descriptor {
+  color: #9a9a9a;
+}
+
+#background-cover #write-review-container .info-container .info-row .text {
+  font-weight: 500;
+  font-size: 2.2rem;
+}
+
+#background-cover #write-review-container .star-rating-container {
+  width: 50%;
+  margin-bottom: 2rem;
+}
+
+#background-cover #write-review-container .star-rating-container .descriptor {
+  color: #9a9a9a;
+}
+
+#background-cover #write-review-container .star-rating-container .star-container {
+  display: flex;
+  align-items: center;
+}
+
+#background-cover #write-review-container .star-rating-container .star-container svg {
+  width: 2.5rem;
+  height: 2.5rem;
+  fill: #2c86c4;
+  z-index: 1;
+  margin-right: 0.5rem;
+}
+
+#background-cover #write-review-container .star-rating-container .star-container svg:hover {
+  cursor: pointer;
+}
+
+#background-cover #write-review-container .review-content-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 2rem;
+}
+
+#background-cover #write-review-container .review-content-container textarea {
+  display: block;
+  font-size: 2.2rem;
+  outline: none;
+  width: 100%;
+  margin-top: 1rem;
+  border-radius: 10px;
+  padding: 1rem 2rem;
+  flex: 1;
+}
+
+#background-cover #write-review-container .btn-container {
+  display: flex;
+  justify-content: flex-end;
+}
+
+#background-cover #write-review-container .btn-container * {
+  font-size: 2rem;
+}
+
+#background-cover #write-review-container .btn-container .btn-cancel {
+  margin-right: 2rem;
 }
 
 .report-container__header {

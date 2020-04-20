@@ -8,10 +8,9 @@
     <title>@yield('title')</title>
 
 
-
     <!-- my css for all pages, including bootstrap-->
     <link rel="stylesheet" href="{{asset('css/main.css')}}" />
-    {{-- cs for toastr --}}
+    {{-- css for toastr --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.css">
 
     @yield('links-in-head')
@@ -19,9 +18,10 @@
 
 </head>
 
-<body class="animsition @yield('body-class')">
+<body class="animsition @yield('body-class')" onload="">
     <div id="background-cover">
         @yield('add-post-container')
+        @yield('write-review-container')
     </div>
 
         <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -74,9 +74,9 @@
                 </div>
                 <div class="user-photo-container">
                     <div class="p-relative">
-                        <img src="{{asset('assets/sophia.png')}}" alt="user photo" id="tutor-profile-photo">
+                        <img src="{{asset("user_photos/{$user->profile_pic_url}"),}}" alt="user photo" id="tutor-profile-photo">
                         <div class="nav__dropdown-container">
-                            <p class="name">Jamie Chang</p>
+                            <p class="name">{{$user->full_name}}</p>
                             <div class="profile-container">
                                 <span class="profile">Profile</span>
                             </div>
@@ -97,17 +97,16 @@
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.5.0.min.js" integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ=" crossorigin="anonymous"></script>
 
+
     {{-- js for toastr --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
+
 
     {{-- my js for bootstrap --}}
     <script src="{{asset('js/app.js')}}"></script>
 
     {{-- my js for nav --}}
     <script src="{{asset('js/nav.js')}}"></script>
-
-    {{-- my js for bookmark --}}
-    <script src="{{asset('js/bookmark.js')}}"></script>
 
 
     @yield('js')

@@ -7,7 +7,7 @@
         flex: 25%;
         text-align: center;
         // margin-right: 7rem;
-        
+
         &.active {
             border-bottom: 5px solid $color-blue-dark;
         }
@@ -43,12 +43,21 @@ $about-input-width: 70%;
 
     &__img {
         flex: 0 0 25%;
+        height: 100%;
+        display: flex;
+        align-items: center;
 
-        & img{
+        .img-container {
             width: 100%;
-            border-radius: 50%;
             padding: 2rem;
+
+            img {
+                width: 100%;
+                height: 100%;
+                border-radius: 50%;
+            }
         }
+
     }
 
     &__content {
@@ -103,11 +112,14 @@ $about-input-width: 70%;
 
     }
 
+    + div {
+        margin-bottom: 5rem;
+    }
 
 }
 
-.about__subjects__header, 
-.about__courses__header, 
+.about__subjects__header,
+.about__courses__header,
 .about__characteristics__header {
     margin-top: 2rem;
     font-size: $font-2;
@@ -164,7 +176,7 @@ $about-input-width: 70%;
     @media only screen and (max-width: 575px) { //576px
         width: 50%;
     };
-    
+
 }
 
 .about__buttons__container {
@@ -206,7 +218,7 @@ $about-input-width: 70%;
         }
     }
 
-    
+
 }
 
 
@@ -223,17 +235,20 @@ $margin-top: 3rem;
     }
     .sessions__header {
         font-size: $font-2;
-    
+
         &--sub {
             font-size: 2.2rem;
         }
-    
+
     }
-    
+
     .sessions__info {
         margin-top: 1rem;
-        
-    }    
+    }
+
+    .session__container {
+        max-width: 50%;
+    }
 }
 
 
@@ -274,7 +289,7 @@ $margin-top: 3rem;
         font-size: 1.5rem;
         height: 70vh;
         overflow: scroll;
-        
+
         > :first-child {
             margin-top: 0;
         }
@@ -295,10 +310,12 @@ $margin-top: 3rem;
         }
     }
     .subject-container {
-        text-align: center;
         * {
             white-space: nowrap;
         }
+        min-width: 15%;
+        display: block;
+        text-align: center;
     }
 
     p {
@@ -311,4 +328,111 @@ $margin-top: 3rem;
 .saved__container,
 .reviews__container {
     display: none;
+}
+
+
+
+#background-cover {
+
+    #write-review-container {
+        @include absCenter;
+
+        border-radius: 10px;
+        width: 50%;
+
+        background-color: white;
+        padding: 2rem 4rem;
+        color: black;
+
+        display: flex;
+        flex-direction: column;
+
+        .title {
+            margin-bottom: 2rem;
+        }
+
+        .info-container {
+
+            .info-row {
+                display: flex;
+                flex-wrap: wrap;
+                margin-bottom: 1rem;
+
+                > * {
+                    flex: 50%;
+                }
+
+                .descriptor {
+                    color: $color-gray;
+                }
+
+                .text {
+                    font-weight: 500;
+                    font-size: $font-2;
+                }
+            }
+        }
+
+        .star-rating-container {
+            width: 50%;
+            margin-bottom: 2rem;
+
+            .descriptor {
+                color: $color-gray;
+            }
+
+            .star-container {
+                display: flex;
+                align-items: center;
+
+
+
+                svg {
+                    width: 2.5rem;
+                    height: 2.5rem;
+                    fill: $color-blue-dark;
+                    z-index: 1;
+                    margin-right: .5rem;
+
+                    &:hover {
+                        cursor: pointer;
+                    }
+                }
+
+
+            }
+        }
+
+        .review-content-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 2rem;
+
+            textarea {
+                display: block;
+                font-size: 2.2rem;
+                outline: none;
+                width: 100%;
+                margin-top: 1rem;
+                border-radius: 10px;
+                padding: 1rem 2rem;
+                flex: 1;
+            }
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: flex-end;
+
+            * {
+                font-size: 2rem;
+            }
+
+            .btn-cancel {
+                margin-right: 2rem;
+            }
+        }
+
+    }
 }

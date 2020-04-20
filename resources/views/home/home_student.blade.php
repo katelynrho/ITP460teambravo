@@ -8,6 +8,9 @@
 </div>
 @endsection
 
+@section('body-class')
+min-width-450
+@endsection
 
 
 @section('add-post-container')
@@ -109,7 +112,10 @@
                     data-user-id="{{$recommendedCourse->id}}">
                         <tbody>
                             <tr>
-                                <th scope="row"><img src="assets/mj.jpg" alt="tutor pic">{{$recommendedCourse->full_name}}</th>
+                                <th scope="row">
+                                    <img src="{{asset("user_photos/{$recommendedCourse->profile_pic_url}")}}" alt="tutor pic">
+                                    {{$recommendedCourse->full_name}}
+                                </th>
                                 <td>
                                     <div>{{App\User::find($recommendedCourse->id)->school_year->first()->school_year}}</div>
                                     <div>{{App\User::find($recommendedCourse->id)->major->first()->major}}</div>
@@ -139,7 +145,10 @@
                     data-user-id="{{$recommendedSubject->id}}">
                         <tbody>
                             <tr>
-                                <th scope="row"><img src="assets/mj.jpg" alt="tutor pic">{{$recommendedSubject->full_name}}</th>
+                                <th scope="row">
+                                    <img src="{{asset("user_photos/{$recommendedSubject->profile_pic_url}")}}" alt="tutor pic">
+                                    {{$recommendedSubject->full_name}}
+                                </th>
                                 <td>
                                     <div>{{App\User::find($recommendedSubject->id)->school_year->first()->school_year}}</div>
                                     <div>{{App\User::find($recommendedSubject->id)->major->first()->major}}</div>
@@ -174,7 +183,7 @@
                             <h5><span>Upcoming Sessions</span></h5>
                         </div>
                         @foreach ($upcomingSessions as $upcomingSession)
-                            <div class="session__container" data-user-id="{{$upcomingSession->session_id}}">
+                            <div class="session__container" data-session-id="{{$upcomingSession->session_id}}">
                                 <span class="title">{{$upcomingSession->full_name}}</span>
                                 <span class="descriptor">Date</span>
                                 <span class="descriptor">Subject / Course</span>
@@ -192,8 +201,8 @@
                                     {{$upcomingSession->start_time}} - {{$upcomingSession->end_time}}
                                 </span>
                                 <span class="text">${{$upcomingSession->hourly_rate}} / hr</span>
-                                <button class="btn btn-lg btn-outline-primary">Cancel Session</button>
-                                <button class="btn btn-lg btn-primary">View Session</button>
+                                <button class="btn btn-lg btn-outline-primary" data-session-id="{{$upcomingSession->session_id}}">Cancel Session</button>
+                                <button class="btn btn-lg btn-primary" data-session-id="{{$upcomingSession->session_id}}">View Session</button>
                             </div>
                         @endforeach
                     @endif
@@ -213,7 +222,9 @@
                     </div>
                     @foreach($pastTutors as $pastTutor)
                     <div class="tutor-container" data-user-id="{{$pastTutor->tutor_id}}">
-                        <div class="img-container"><img src="assets/mj.jpg" alt="tutor pic"></div>
+                        <div class="img-container">
+                            <img src="{{asset("user_photos/{$pastTutor->profile_pic_url}")}}" alt="tutor pic">
+                        </div>
                         <div class="tutor__info">
                             <div>{{$pastTutor->full_name}}</div>
                             <div>Last Session:
@@ -283,12 +294,12 @@
                         @foreach ($posts as $post)
                         <tr data-post-id="{{$post->post_id}}">
                             <th scope="row">
-                                <img src="assets/mj.jpg" alt="tutor pic">
+                                <img src="{{asset("user_photos/{$post->profile_pic_url}")}}" alt="tutor pic">
                                 {{$post->full_name}}
                             </th>
                             <td>
                                 <p>
-                                    {{$post->post_created_time}}
+                                    {{date('m/d/Y', strtotime($post->post_created_time))}}
                                 </p>
                                 <span>
                                     @if($post->is_course_post)
@@ -329,5 +340,8 @@
 <!-- defined javascript -->
 <script src="js/home_student.js"></script>
 <script src="js/home_common.js"></script>
+
+{{-- my js for bookmark --}}
+<script src="{{asset('js/bookmark.js')}}"></script>
 
 @endsection

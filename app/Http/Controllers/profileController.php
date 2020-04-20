@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Auth;
 use App\School_year;
 use App\Major;
+use App\User;
 use Hash;
 
 class profileController extends Controller
@@ -14,24 +15,60 @@ class profileController extends Controller
     // TODO: fill in the data of the user into subjects/characteristics/courses, sessions, saved, and reviews
     public function show(Request $request) {
         $user = Auth::user();
+
+        $userPhotoUrl = $user->profile_pic_url;
+        $subjects = $user->subjects;
+        $courses = $user->courses;
+        $characteristics = $user->characteristics;
+        $upcomingSessions = $user->upcomingSessions(10000);
+        $pastSessions = $user->pastSessions();
+
+
+
+
         if($user->is_tutor) {
-            return view('profile.profile_tutor');
+            // get reviews the user is being reviewed
+            $reviews = $user->being_reviews;
+            $reviewTotalRating = $user->getRating();
+
+            return view('profile.profile_tutor', [
+                'user' => $user,
+                'subjects' => $subjects,
+                'courses' => $courses,
+                'characteristics' => $characteristics,
+                'userPhotoUrl' => asset("user_photos/{$userPhotoUrl}"),
+                'upcomingSessions' => $upcomingSessions,
+                'pastSessions' => $pastSessions,
+                'reviews' => $reviews,
+                'reviewTotalRating' => $reviewTotalRating
+            ]);
         }
         else {
-            // SARAH: get the student information and put it into the profile_student page. Let's first try getting the user's name.
+            // get bookmarked tutors
+            $bookmarks = $user->bookmarks;
 
-            $subjects = $user->subjects;
+            // get reviews the user wrote
+            $reviews = $user->written_reviews;
+            $reviewTotalRating = $user->getRatingAsReviewer();
 
             return view('profile.profile_student', [
-                'subjects' => $subjects
+                'user' => $user,
+                'subjects' => $subjects,
+                'courses' => $courses,
+                'characteristics' => $characteristics,
+                'userPhotoUrl' => asset("user_photos/{$userPhotoUrl}"),
+                'upcomingSessions' => $upcomingSessions,
+                'pastSessions' => $pastSessions,
+                'bookmarks' => $bookmarks,
+                'reviews' => $reviews,
+                'reviewTotalRating' => $reviewTotalRating
             ]);
-
-            // Sarah: instead of 'return view('profile.profile_student');', you can refer to the return statement in function showEdit(). it is returning an array of variables. So in this way, you can pass the username to 'profile_student.blade.php'. Please refer to my notes in 'profile_student.blade.php'
         }
-
     }
 
-    // TODO: fill in the data of the user's photo
+
+
+
     public function showEdit() {
         $user = Auth::user();
         $fullName = $user->full_name;
@@ -50,7 +87,8 @@ class profileController extends Controller
                 'minor' => $minor,
                 'year' => $year,
                 'gpa' => $gpa,
-                'hourlyRate' => $hourlyRate
+                'hourlyRate' => $hourlyRate,
+                'user' => $user
             ]);
         }
         else {
@@ -59,7 +97,8 @@ class profileController extends Controller
                 'email' => $email,
                 'major' => $major,
                 'minor' => $minor,
-                'year' => $year
+                'year' => $year,
+                'user' => $user
             ]);
         }
     }
@@ -67,7 +106,6 @@ class profileController extends Controller
     public function editProfile(Request $request) {
         $user = Auth::user();
         if($user->is_tutor) {
-            // TODO: check for profile image
             $request->validate([
                 'fullName' => ['
                     required'
@@ -90,7 +128,12 @@ class profileController extends Controller
                 'gpa' => [
                     'nullable',
                     'numeric'
+                ],
+                'profile-pic' => [
+                    'file',
+                    'mimes:jpeg,bmp,png'
                 ]
+
             ]);
 
             $user->full_name = $request->input('fullName');
@@ -103,12 +146,13 @@ class profileController extends Controller
             $user->hourly_rate = substr($request->input('hourlyRate'), 0, 4);
             $user->gpa = substr($request->input('gpa'), 0, 4);
 
+            $this->saveProfilePic($request, $user);
+
             $user->save();
 
             return redirect()->route('edit_profile')->with('success', 'Your profile is updated successfully!');
         }
         else {
-            // TODO: check for profile image
             $request->validate([
                 'fullName' => ['
                     required'
@@ -123,6 +167,10 @@ class profileController extends Controller
                 ],
                 'minor' => [
                     'nullable'
+                ],
+                'profile-pic' => [
+                    'file',
+                    'mimes:jpeg,bmp,png'
                 ]
             ]);
 
@@ -134,11 +182,23 @@ class profileController extends Controller
 
             $user->school_year_id = School_year::where('school_year', '=', $request->input('schoolYear'))->first()->id;
 
+            $this->saveProfilePic($request, $user);
+
             $user->save();
 
             return redirect()->route('edit_profile')->with('success', 'Your profile is updated successfully!');
         }
     }
 
+    private function saveProfilePic(&$request, &$user) {
+        // if user uploaded the file
+        if($request->file('profile-pic')) {
+            $imgURL = $request->file('profile-pic')->store('');
+            $user->profile_pic_url = $imgURL;
+        }
+        else {
+            $user->profile_pic_url = 'placeholder.png';
+        }
+    }
 
 }
