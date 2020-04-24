@@ -96,6 +96,9 @@
                     <form class="about__subjects" method="POST" action="/add_fav_subject">
                         @csrf
                         <div class="about__subjects__header">Subjects</div>
+                        <div class="f-14">
+                            Add Subjects that you want help in
+                        </div>
                         <div class="about__content">
                             <svg>
                                 <use xlink:href="{{asset('assets/sprite.svg#icon-magnifying-glass')}}"></use>
@@ -122,6 +125,9 @@
                         @csrf
                         <div class="about__courses__header">
                             Courses
+                        </div>
+                        <div class="f-14">
+                            Add Courses you are currently taking and need help in
                         </div>
                         <div class="about__content">
                             <svg>
@@ -150,6 +156,9 @@
                         @csrf
                         <div class="about__characteristics__header">
                             Characteristics
+                        </div>
+                        <div class="f-14">
+                            Add Characteristics that help define you to potential tutors
                         </div>
                         <div class="about__content">
                             <svg>
@@ -194,7 +203,7 @@
 
                         </div>
                         @if(count($upcomingSessions) === 0)
-                            <h5>There are no upcoming sessions yet</h5>
+                            <span class="f-16">Scheduled sessions between you and a student will appear below.</span>
                         @else
                             @foreach ($upcomingSessions as $upcomingSession)
                                 <div class="session__container" data-session-id="{{$upcomingSession->session_id}}">
@@ -235,7 +244,7 @@
                 </div> --}}
                 <div class="sessions__info">
                     @if(count($pastSessions) === 0)
-                        <h5>There are no past sessions yet</h5>
+                        <span class="f-16">There are no past sessions yet</span>
                     @else
                         @foreach ($pastSessions as $pastSession)
                             <div class="session__container" data-session-id="{{$pastSession->session_id}}">
@@ -270,7 +279,7 @@
             <div class="scroll-container">
             <div class="search-card-container row">
                 @if(count($bookmarks) === 0)
-                    <h5>You have not saved any tutors yet</h5>
+                    <span class="f-16">You have not saved any tutors yet</span>
                 @else
                     @foreach ($bookmarks as $bookmark)
                         <div class="search-card-flex-container col-lg-3 col-md-4 col-sm-4 col-6" data-user-id="{{$bookmark->id}}">
@@ -278,7 +287,7 @@
                                 <svg class="bookmark bookmark-marked" data-user-id="{{$bookmark->id}}">
                                     <use xlink:href="assets/sprite.svg#icon-bookmark"></use>
                                 </svg>
-                                <img src="{{asset("user_photos/{$bookmark->profile_pic_url}")}}" alt="user photo">
+                                <img src="{{asset("user_photos/{$bookmark->profile_pic_url}")}}" alt="user photo" data-user-id="{{$bookmark->id}}">
                                 <p class="name">{{$bookmark->full_name}}</p>
                                 <p class="major">{{App\Major::find($bookmark->major_id)->major}}</p>
                                 <p class="star-container">${{$bookmark->hourly_rate}} / hr |
@@ -343,7 +352,7 @@
             <div class="reviews">
                 @foreach ($reviews as $review)
                 @php
-                    $user = App\User::find($review->reviewee_id);
+                    $reviewee = App\User::find($review->reviewee_id);
                     $session = App\Session::find($review->session_id);
 
                     // did not use created at, because the review might be updated. By defulat, it should equal to created time when created initially
@@ -357,9 +366,9 @@
                     <tbody>
                         <tr>
                             <th scope="row">
-                                <img src="{{asset("user_photos/{$user->profile_pic_url}")}}" alt="reviewee photo">
+                                <img src="{{asset("user_photos/{$reviewee->profile_pic_url}")}}" alt="reviewee photo" data-user-id="{{$reviewee->id}}">
                             </th>
-                            <td class="name">{{$user->full_name}}</td>
+                            <td class="name">{{$reviewee->full_name}}</td>
                             <td class="subject-container">
                                 <div class="grey-text">Subject / Course</div>
                                 <div>{{$session->courseSubject()}}</div>

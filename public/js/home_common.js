@@ -1,6 +1,6 @@
 // select view session
 $('.home__container__notifications__sessions .session__container > button:last-child').click(function () {
-    window.location.href = '/view_session_before';
+    window.location.href = `/view_session/${$(this).attr('data-session-id')}?from=home`;
 });
 
 
@@ -54,7 +54,7 @@ $('#add-post-container').submit((e) => {
     let postMsg = $('#post-content').val();
     let inputCourseSubject = $('#add-post-course-subject option:selected').val();
 
-    console.log(inputCourseSubject);
+
     if(!postMsg || postMsg.trim().length === 0) {
         toastr.warning('Please enter post content!');
         return;
@@ -119,7 +119,7 @@ $('#filter-form').submit(function(e) {
 
 
             posts.forEach(post => {
-                let imgUrl = 'assets/mj.jpg';
+                let imgUrl = assetsURL + '/' + post.profile_pic_url;
                 let fullName = post.full_name;
 
                 let courseSubjectName;
@@ -130,14 +130,17 @@ $('#filter-form').submit(function(e) {
 
                 let postMsg = post.post_message;
                 let postId = post.post_id;
-
+                let userId = post.user_id;
                 let dateCreated = post.post_created_time;
+
+
+
                 dateCreated = $.datepicker.formatDate('mm/dd/yy', new Date(dateCreated));
 
 
                 let element = `
                     <tr data-post-id="${postId}">
-                        <th scope="row"><img src="${imgUrl}" alt="tutor pic">${fullName}</th>
+                        <th scope="row"  onclick="viewProfile(${userId})"><img src="${imgUrl}" alt="tutor pic">${fullName}</th>
                         <td>
                             <p>${dateCreated}</p><span>${courseSubjectName}</span>
                         </td>
@@ -149,7 +152,7 @@ $('#filter-form').submit(function(e) {
                 if(inputTutorStudent === 'my-posts') {
                     element = `
                         <tr data-post-id="${postId}">
-                            <th scope="row"><img src="${imgUrl}" alt="tutor pic">${fullName}</th>
+                            <th scope="row" onclick="viewProfile(${userId})"><img src="${imgUrl}" alt="tutor pic">${fullName}</th>
                             <td>
                                 <p>${dateCreated}</p><span>${courseSubjectName}</span>
                             </td>
@@ -189,10 +192,25 @@ function showAddPost() {
 }
 
 
+function showSignupWizard() {
+    $('#background-cover-2').height(document.documentElement.scrollHeight);
+    $('#background-cover-2').width(document.documentElement.scrollWidth);
+    $('#background-cover-2').show();
+
+    let centerOffset = (document.documentElement.scrollHeight - $(window).height()) / 2;
+    $('html,body').animate({
+            scrollTop: centerOffset
+        },
+        'slow'
+    );
+}
+
 function success(successMsg) {
     toastr.success(successMsg);
 }
 
-
+function viewProfile(id) {
+    window.location.href = '/view_profile/' + id + '?from=home';
+}
 
 

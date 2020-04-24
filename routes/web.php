@@ -48,6 +48,7 @@ Route::post('/forget_password_send', 'forgetPasswordController@send');
 
 // profile
 Route::get('/profile', 'profileController@show')->name('profile')->middleware(['checkLogin']);
+Route::get('/view_profile/{viewUserId}', 'profileController@viewProfile')->middleware(['checkLogin']);
 
 // edit profile
 Route::get('/edit_profile', 'profileController@showEdit')->name('edit_profile')->middleware(['checkLogin']);
@@ -76,12 +77,11 @@ Route::get('/bookmark_add', 'generalController@addBookmark')->middleware(['check
 Route::get('/dashboard', 'generalController@getDashboardPosts')->middleware(['checkLogin']);
 Route::post('/dashboard_add', 'generalController@addDashboardPosts')->middleware(['checkLogin']);
 
-// tutor requests
-Route::post('/tutor_request_reject', 'generalController@rejectTutorRequest')->middleware(['checkLogin']);
-Route::post('/tutor_request_accept', 'generalController@acceptTutorRequest')->middleware(['checkLogin']);
+
 
 // sessions
-Route::post('/session_cancel', 'generalController@cancelSession')->middleware(['checkLogin']);
+Route::post('/session_cancel', 'sessionController@cancelSession')->middleware(['checkLogin']);
+Route::get('/view_session/{session}', 'sessionController@viewSession')->middleware(['checkLogin']);
 
 
 // subjects
@@ -99,4 +99,17 @@ Route::post('/add_characteristic', 'characteristicController@addCharacteristic')
 // reviews
 Route::post('/post_review', 'reviewController@postReview')->middleware(['checkLogin']);
 
+// search
+Route::get('/search', 'searchController@show')->middleware(['checkLogin']);
 
+// reports
+Route::get('/report/{reportee}', 'reportController@showReport')->middleware(['checkLogin']);
+Route::post('/report/{reportee}', 'reportController@postReport')->middleware(['checkLogin']);
+
+// tutor requests
+Route::post('/tutor_request_reject', 'generalController@rejectTutorRequest')->middleware(['checkLogin']);
+Route::post('/tutor_request_accept', 'generalController@acceptTutorRequest')->middleware(['checkLogin']);
+Route::get('/tutor_request/{tutor}', 'tutorRequestController@showMakeTutorRequest')->middleware(['checkLogin']);
+Route::get('/edit_availability', 'tutorRequestController@showEditAvailability')->middleware(['checkLogin']);
+Route::post('/edit_availability', 'tutorRequestController@saveAvailableTime')->middleware(['checkLogin']);
+Route::post('/tutor_request', 'tutorRequestController@makeTutorRequest')->middleware(['checkLogin']);

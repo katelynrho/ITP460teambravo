@@ -8,6 +8,8 @@ use Auth;
 use App\Dashboard_post;
 use App\Tutor_request;
 use App\Session;
+use Carbon\Carbon;
+use App\User;
 
 class generalController extends Controller
 {
@@ -111,7 +113,7 @@ class generalController extends Controller
                         ->join('users', 'users.id', '=', 'user_id')
                         ->leftJoin('courses', 'course_id', '=', 'courses.id')
                         ->leftJoin('subjects', 'subject_id', '=', 'subjects.id')
-                        ->where(function($query) {
+                        ->where(function($query) use($course_ids, $subject_ids) {
                             $query->whereIn('course_id', $course_ids)
                                 ->orWhereIn('subject_id', $subject_ids);
                         })
@@ -125,7 +127,7 @@ class generalController extends Controller
                         ->leftJoin('courses', 'course_id', '=', 'courses.id')
                         ->leftJoin('subjects', 'subject_id', '=', 'subjects.id')
                         ->where('users.is_tutor', 1)
-                        ->where(function($query) {
+                        ->where(function($query) use($course_ids, $subject_ids) {
                             $query->whereIn('course_id', $course_ids)
                                 ->orWhereIn('subject_id', $subject_ids);
                         })
@@ -139,7 +141,7 @@ class generalController extends Controller
                         ->leftJoin('courses', 'course_id', '=', 'courses.id')
                         ->leftJoin('subjects', 'subject_id', '=', 'subjects.id')
                         ->where('users.is_tutor', 0)
-                        ->where(function($query) {
+                        ->where(function($query) use($course_ids, $subject_ids) {
                             $query->whereIn('course_id', $course_ids)
                                 ->orWhereIn('subject_id', $subject_ids);
                         })
@@ -187,10 +189,42 @@ class generalController extends Controller
 
     // TODO: add validation
     public function acceptTutorRequest(Request $request) {
-
+        $user = Auth::user();
         $tutorRequestId = $request->input('tutor_request_id');
 
         $tutorRequest = Tutor_request::find($tutorRequestId);
+
+        // Must not accept the tutor if it is outdated
+        $mytime = Carbon::now();
+        $requestTime = User::getTime($tutorRequest->tutor_session_date, $tutorRequest->start_time);
+        if($requestTime <= $mytime) {
+            $tutorRequest->delete();
+            return response()->json(
+                [
+                    'errorMsg' => 'The tutor request is outdated! Going to remove it automatically!'
+                ]
+            );
+        }
+
+        // Must not accept the tutor request if it conflicts with a scheduled session
+        $upcomingSessions = $user->upcomingSessions(1000);
+        foreach($upcomingSessions as $upcomingSession) {
+            $upcomingSessionStartTime = User::getTime($upcomingSession->date, $upcomingSession->start_time);
+            $upcomingSessionEndTime = User::getTime($upcomingSession->date, $upcomingSession->end_time);
+
+            $requestTimeEnd = User::getTime($tutorRequest->tutor_session_date, $tutorRequest->end_time);
+
+            // if it conflicts
+            if(($requestTime >= $upcomingSessionStartTime && $requestTime <= $upcomingSessionEndTime) || ($requestTimeEnd >= $upcomingSessionStartTime && $requestTimeEnd <= $upcomingSessionEndTime)) {
+                $tutorRequest->delete();
+                return response()->json(
+                    [
+                        'errorMsg' => 'The tutor request is conflicted with an already scheduled tutor session! Going to remove it automatically!'
+                    ]
+                );
+            }
+        }
+
 
         $session = new Session();
         $session->tutor_id = $tutorRequest->tutor_id;
@@ -227,19 +261,7 @@ class generalController extends Controller
         );
     }
 
-    // TODO: add validation
-    public function cancelSession(Request $request) {
-        $sessionId = $request->input('session_id');
-        $session = Session::find($sessionId);
-        $session->is_canceled = 1;
-        $session->save();
 
-        return response()->json(
-            [
-                'successMsg' => 'Successfully cancelled the tutor session!'
-            ]
-        );
-    }
 
 
 }

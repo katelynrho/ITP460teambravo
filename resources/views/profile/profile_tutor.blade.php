@@ -32,7 +32,7 @@
                     </div>
                     <div class="btn-container">
                         <a class="btn btn-lg btn-primary" href="/edit_profile">Edit Profile</a>
-                        <a class="btn btn-lg btn-outline-primary" href="/edit_availability">Edit Availability</a>
+                        <a class="btn btn-lg btn-outline-primary" href="/edit_availability?from=profile">Edit Availability</a>
                     </div>
                 </div>
             </div>
@@ -42,6 +42,9 @@
                     <form class="about__subjects" method="POST" action="/add_fav_subject">
                         @csrf
                         <div class="about__subjects__header">Subjects</div>
+                        <div class="f-14">
+                            Add Subjects that you are confident to tutor in
+                        </div>
                         <div class="about__content">
                             <svg>
                                 <use xlink:href="{{asset('assets/sprite.svg#icon-magnifying-glass')}}"></use>
@@ -69,6 +72,9 @@
                         <div class="about__courses__header">
                             Courses
                         </div>
+                        <div class="f-14">
+                            Add Courses that you did well in and want to tutor in
+                        </div>
                         <div class="about__content">
                             <svg>
                                 <use xlink:href="assets/sprite.svg#icon-magnifying-glass"></use>
@@ -95,6 +101,9 @@
                         @csrf
                         <div class="about__characteristics__header">
                             Characteristics
+                        </div>
+                        <div class="f-14">
+                            Add Characteristics that help define you to potential students
                         </div>
                         <div class="about__content">
                             <svg>
@@ -140,7 +149,7 @@
 
                         </div>
                         @if(count($upcomingSessions) === 0)
-                        <h5>There are no upcoming sessions yet</h5>
+                        <span class="f-16">Scheduled sessions between you and a student will appear below.</span>
                         @else
                             @foreach ($upcomingSessions as $upcomingSession)
                                 <div class="session__container" data-session-id="{{$upcomingSession->session_id}}">
@@ -156,12 +165,12 @@
                                         <span class="text">{{App\Subject::find($upcomingSession->subject_id)->subject}}</span>
                                     @endif
                                     <span class="descriptor">Time</span>
-                                    <span class="descriptor">Location</span>
+                                    <span class="descriptor">Hourly Rate</span>
                                     <span class="text">
                                         {{$upcomingSession->start_time}} - {{$upcomingSession->end_time}}
                                     </span>
                                     <span class="text">
-                                        {{$upcomingSession->location ?? 'On Campus'}}
+                                        ${{$user->hourly_rate}} / hr
                                     </span>
                                     <button class="btn btn-lg btn-outline-primary" data-session-id="{{$upcomingSession->session_id}}">Cancel Session</button>
                                     <button class="btn btn-lg btn-primary" data-session-id="{{$upcomingSession->session_id}}">View Session</button>
@@ -181,7 +190,7 @@
                 </div> --}}
                 <div class="sessions__info">
                     @if(count($pastSessions) === 0)
-                        <h5>There are no past sessions yet</h5>
+                        <span class="f-16">There are no past sessions yet</span>
                     @else
                         @foreach ($pastSessions as $pastSession)
                             <div class="session__container" data-session-id="{{$pastSession->session_id}}">
@@ -198,7 +207,7 @@
                                 <span class="descriptor">Hourly Rate</span>
                                 <span class="text">{{$pastSession->start_time}} - {{$pastSession->end_time}}</span>
                                 <span class="text">
-                                    ${{$pastSession->hourly_rate}} / hr
+                                    ${{$user->hourly_rate}} / hr
                                 </span>
                                 <button class="btn btn-lg btn-outline-primary btn-write-review" data-session-id="{{$pastSession->session_id}}">Write a review +</button>
                                 <button class="btn btn-lg btn-primary" data-session-id="{{$pastSession->session_id}}">View Session</button>
@@ -243,7 +252,7 @@
             <div class="reviews">
                 @foreach ($reviews as $review)
                 @php
-                    $user = App\User::find($review->reviewer_id);
+                    $reviewer = App\User::find($review->reviewer_id);
                     $session = App\Session::find($review->session_id);
 
                     // did not use created at, because the review might be updated. By defulat, it should equal to created time when created initially
@@ -257,9 +266,9 @@
                     <tbody>
                         <tr>
                             <th scope="row">
-                                <img src="{{asset("user_photos/{$user->profile_pic_url}")}}" alt="reviewee photo">
+                                <img src="{{asset("user_photos/{$reviewer->profile_pic_url}")}}" alt="reviewee photo" data-user-id="{{$reviewer->id}}">
                             </th>
-                            <td class="name">{{$user->full_name}}</td>
+                            <td class="name">{{$reviewer->full_name}}</td>
                             <td class="subject-container">
                                 <div class="grey-text">Subject / Course</div>
                                 <div>{{$session->courseSubject()}}</div>

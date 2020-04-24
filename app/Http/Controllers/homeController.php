@@ -10,7 +10,7 @@ use App\Subject;
 use App\User;
 use App\Dashboard_post;
 use App\Tutor_request;
-
+use Carbon\Carbon;
 
 class homeController extends Controller
 {
@@ -30,6 +30,15 @@ class homeController extends Controller
         $interestedCourses = $user->courses;
         $interestedSubjects = $user->subjects;
 
+        //whenever a user goes to the home page, we need to REMOVE the outdated tutor_requests
+        $mytime = Carbon::now();
+        $tutorRequests = Tutor_request::all();
+        foreach($tutorRequests as $tutorRequest) {
+            $requestTime = User::getTime($tutorRequest->tutor_session_date, $tutorRequest->start_time);
+            if($requestTime <= $mytime) {
+                $tutorRequest->delete();
+            }
+        }
 
         if($user->is_tutor) {
             // get upcoming sessions (at most 4)
@@ -44,8 +53,9 @@ class homeController extends Controller
                             ->get();
 
 
-            // TODO: build availability calendar
-
+            // build availability calendar
+            $times = $user->available_times;
+            $upcomingSessions = $user->upcomingSessions(10000);
 
             return view('home.home_tutor', [
                 'upcomingSessions' => $upcomingSessions,
@@ -53,13 +63,13 @@ class homeController extends Controller
                 'interestedCourses' => $interestedCourses,
                 'interestedSubjects' => $interestedSubjects,
                 'tutorRequests' =>$tutorRequests,
-                'user' => $user
+                'user' => $user,
+                'times' => $times,
+                'upcomingSessions' => $upcomingSessions
             ]);
 
         }
         else {
-            // choose randomly from subjects and courses the user is interested in, and display all of them. (If there is no courses/subjects the user interested, show nothing for that specific one)
-
             // get all the courses that users are interested in
             $course_ids = $user->courses()->pluck('id');
 

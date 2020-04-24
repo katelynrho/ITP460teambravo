@@ -7,6 +7,9 @@
 <div class="container edit-profile__container">
     <div>
         <a class="btn btn-lg back-button" id="back-button" href="/profile">
+            <svg>
+                <use xlink:href="{{asset('assets/sprite.svg#icon-chevron-small-left')}}"></use>
+            </svg>
             Back to Profile
         </a>
     </div>
@@ -35,7 +38,7 @@
             <input type="text" value="{{$year}}" name="schoolYear" id="schoolYear" required>
             <div class="input-group">
                 <div class="custom-file">
-                  <input type="file" class="custom-file-input" id="input-photo" name="profile-pic">
+                  <input type="file" class="custom-file-input" id="input-photo" name="profile-pic" accept="image/*">
                   <label class="custom-file-label" id="file-input-text" for="input-photo">Choose file</label>
                 </div>
             </div>

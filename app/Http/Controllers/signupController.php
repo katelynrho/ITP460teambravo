@@ -125,7 +125,9 @@ class signupController extends Controller
         $request->session()->flush();
         Auth::login($user);
 
-        return redirect()->route('profile');
+        return redirect()->route('home')->with([
+            'signupSuccess' => 'signupSuccess'
+        ]);
     }
 
 
@@ -239,7 +241,7 @@ class signupController extends Controller
         $request->session()->flush();
         Auth::login($user);
 
-        return redirect()->route('profile');
+        return redirect()->route('home');
     }
 
 

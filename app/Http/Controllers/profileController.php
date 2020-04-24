@@ -8,11 +8,10 @@ use App\School_year;
 use App\Major;
 use App\User;
 use Hash;
+use App\Review;
 
 class profileController extends Controller
 {
-
-    // TODO: fill in the data of the user into subjects/characteristics/courses, sessions, saved, and reviews
     public function show(Request $request) {
         $user = Auth::user();
 
@@ -22,9 +21,6 @@ class profileController extends Controller
         $characteristics = $user->characteristics;
         $upcomingSessions = $user->upcomingSessions(10000);
         $pastSessions = $user->pastSessions();
-
-
-
 
         if($user->is_tutor) {
             // get reviews the user is being reviewed
@@ -146,6 +142,7 @@ class profileController extends Controller
             $user->hourly_rate = substr($request->input('hourlyRate'), 0, 4);
             $user->gpa = substr($request->input('gpa'), 0, 4);
 
+
             $this->saveProfilePic($request, $user);
 
             $user->save();
@@ -174,8 +171,9 @@ class profileController extends Controller
                 ]
             ]);
 
+
+
             $user->full_name = $request->input('fullName');
-            $user->password = Hash::make($request->input('password'));
             $user->minor = $request->input('minor');
 
             $user->major_id = Major::where('major', '=', $request->input('major'))->first()->id;
@@ -185,6 +183,7 @@ class profileController extends Controller
             $this->saveProfilePic($request, $user);
 
             $user->save();
+
 
             return redirect()->route('edit_profile')->with('success', 'Your profile is updated successfully!');
         }
@@ -198,6 +197,52 @@ class profileController extends Controller
         }
         else {
             $user->profile_pic_url = 'placeholder.png';
+        }
+    }
+
+    public function viewProfile(Request $request, $viewUserId) {
+        $from = $request->input('from');
+
+        $currentUser = Auth::user();
+        $viewUser = User::find($viewUserId);
+
+        if($currentUser->is_tutor == $viewUser->is_tutor) {
+            return redirect()->route('home');
+        }
+
+        $subjects = $viewUser->subjects;
+        $courses = $viewUser->courses;
+        $characteristics = $viewUser->characteristics;
+
+        // get reviews the user is being reviewed
+        $reviews = $viewUser->being_reviews;
+        $reviewTotalRating = $viewUser->getRating();
+
+        if(!$viewUser->is_tutor) {
+
+            return view('profile.view_student_profile', [
+                'from' => $from,
+                'user' => $currentUser,
+                'viewUser' => $viewUser,
+                'subjects' => $subjects,
+                'courses' => $courses,
+                'characteristics' => $characteristics,
+                'reviews' => $reviews,
+                'reviewTotalRating' => $reviewTotalRating
+            ]);
+        }
+        else {
+
+            return view('profile.view_tutor_profile', [
+                'from' => $from,
+                'user' => $currentUser,
+                'viewUser' => $viewUser,
+                'subjects' => $subjects,
+                'courses' => $courses,
+                'characteristics' => $characteristics,
+                'reviews' => $reviews,
+                'reviewTotalRating' => $reviewTotalRating
+            ]);
         }
     }
 

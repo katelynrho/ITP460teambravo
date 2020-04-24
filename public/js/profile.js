@@ -81,13 +81,13 @@ $('.profile-nav > .nav-link').click(function() {
 
 // select all "view session button" from the upcoming section
 $('.sessions__container-1 .session__container > button:last-child').click(function() {
-    window.location.href = '/view_session_before';
+    window.location.href = `/view_session/${$(this).attr('data-session-id')}?from=profile`;
 });
 
 
 // select all "view session button" from the past section
 $('.sessions__container-2 .session__container > button:last-child').click(function() {
-    window.location.href = '/view_session_after';
+    window.location.href = `/view_session/${$(this).attr('data-session-id')}?from=profile`;
 });
 
 
@@ -215,13 +215,17 @@ $('svg.bookmark').click(function() {
             $(this).parent().parent().remove();
 
             if($('.search-card-container').children().length === 0) {
-                $('.search-card-container').append('<h5>You have not saved any tutors yet</h5>');
+                $('.search-card-container').append('<span class="f-16">You have not saved any tutors yet</span>');
             }
         },
         error: function(error) {
             toastr.error(error);
         }
     });
+});
+
+$('.search-card img').click(function() {
+    window.location.href = '/view_profile/' + $(this).attr('data-user-id');
 });
 
 
@@ -247,7 +251,7 @@ $('.sessions__container-1 .session__container > button:not(:last-child)').click(
             $(this).parent().remove();
             // because there is a "shadow-container always inside"
             if($('.upcoming-sessions-container').children().length === 1) {
-                $('.upcoming-sessions-container').append('<h5>There are no upcoming sessions yet</h5>');
+                $('.upcoming-sessions-container').append('<span class="f-16">Scheduled sessions between you and a student will appear below.</span>');
             }
 
         },
@@ -357,7 +361,7 @@ $('#write-review-container').submit((e) => {
             sessionContainer.remove();
 
             if($('.sessions__container-2 .sessions__info').children().length === 0) {
-                $('.sessions__container-2 .sessions__info').append('<h5>There are no past sessions yet</h5>');
+                $('.sessions__container-2 .sessions__info').append('<span class="f-16">There are no past sessions yet</span>');
             }
         },
         error: function(error) {
@@ -378,4 +382,9 @@ $('.star-rating-container svg').hover(function() {
     $(this).prevAll().find('use').attr('xlink:href', starFilled);
 
     $(this).nextAll().find('use').attr('xlink:href', starOutlined);
+});
+
+
+$('.reviews-table img').click(function() {
+    window.location.href = '/view_profile/' + $(this).attr('data-user-id') + '?from=profile';
 });
