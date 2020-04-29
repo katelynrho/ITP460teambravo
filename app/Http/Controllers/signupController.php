@@ -137,9 +137,6 @@ class signupController extends Controller
             $imgURL = $request->file('profile-pic')->store('');
             $user->profile_pic_url = $imgURL;
         }
-        else {
-            $user->profile_pic_url = 'placeholder.png';
-        }
     }
 
 
@@ -241,7 +238,9 @@ class signupController extends Controller
         $request->session()->flush();
         Auth::login($user);
 
-        return redirect()->route('home');
+        return redirect()->route('home')->with([
+            'signupSuccess' => 'signupSuccess'
+        ]);
     }
 
 

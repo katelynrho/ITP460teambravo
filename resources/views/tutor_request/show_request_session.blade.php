@@ -61,9 +61,7 @@
     </div>
     <div class="message-content-container">
         <h5 class="message-header">Message to Tutor</h5>
-        <textarea name="message" id="message" placeholder="Add a short message to the tutor about the session or yourself" rows="3">
-
-        </textarea>
+        <textarea name="message" id="message" placeholder="Add a short message to the tutor about the session or yourself" rows="3"></textarea>
     </div>
     <div class="bottom-container">
         <button class="btn btn-lg btn-outline-primary btn-cancel mr-3" type="button">Cancel</button>
@@ -135,7 +133,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var calendarEl = document.getElementById('calendar');
 
     calendar = new FullCalendar.Calendar(calendarEl, {
-        plugins: ['timeGrid', 'dayGrid', 'interaction', 'bootstrap'],
+        plugins: ['timeGrid', 'interaction', 'bootstrap'],
 
         // default time should be los angeles' time
         timeZone: 'PDT',
@@ -143,7 +141,7 @@ document.addEventListener('DOMContentLoaded', function () {
         header: {
             left: 'prev, next today',
             center: 'title',
-            right: 'timeGridDay, timeGridWeek, dayGridMonth'
+            right: 'timeGridDay, timeGridWeek'
         },
         // contentHeight: 800,
         events: [

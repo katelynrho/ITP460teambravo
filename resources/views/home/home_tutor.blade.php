@@ -29,6 +29,8 @@ min-width-450
 @endsection
 
 
+
+
 @section('confirm-time-container')
 <div id="confirm-time-container">
     <h4 class="mb-3">Confirm Available Time</h4>
@@ -46,7 +48,7 @@ min-width-450
 @section('add-post-container')
 <form id="add-post-container">
     <h3>Write a Post</h3>
-    <textarea name="post-content" id="post-content" placeholder="Begin typing post here."></textarea>
+    <textarea name="post-content" id="post-content" placeholder="Begin typing post here." rows="6"></textarea>
     <small class="subject-course">Subject / Course</small>
     <div class="add-post-bottom">
         <select class="custom-select custom-select-lg " name="add-post-course-subject" id="add-post-course-subject">
@@ -469,7 +471,7 @@ min-width-450
                     <h2>Welcome {{Auth::user()->full_name}}!</h2>
                 </div>
                 <div class="home__container__header__content__text__descriptor">
-                    <small>You have X unread message & {{count($tutorRequests)}} Tutor Request(s)</small>
+                    <small>You have {{$numUnreadMsgs}} unread message & {{count($tutorRequests)}} Tutor Request(s)</small>
                 </div>
             </div>
             <div class="home__container__header__content__img">
@@ -516,11 +518,9 @@ min-width-450
                 <div class="home__container__notifications__title mb-0">
                     <h5><span>Availability Calendar</span></h5>
                 </div>
-                {{-- <div class="home__container__notifications__text">
-                        Click or drag on time slots you are free to tutor throughout the week. Update this calendar as
-                        frequently as needed. Students will be requesting tutoring sessions with you based on your
-                        availability that is noted here. You can also edit this calendar on your Profile page.
-                    </div> --}}
+                <div class="home__container__notifications__text mt-4">
+                    Click or drag on time slots you are free to tutor throughout the week. Update this calendar as frequently as needed. Students will be requesting tutoring sessions with you based on your availability that is noted here. You can also edit this calendar on your Profile page.
+                    </div>
                 <div class="home__container__notifications__calendar">
                     <div id='calendar'></div>
                 </div>
@@ -552,12 +552,12 @@ min-width-450
                     <span class="text">{{App\Subject::find($upcomingSession->subject_id)->subject}}</span>
                     @endif
                     <span class="descriptor">Time</span>
-                    <span class="descriptor">Hourly Rate</span>
+                    <span class="descriptor">Year</span>
                     <span class="text">
                         {{$upcomingSession->start_time}} - {{$upcomingSession->end_time}}
                     </span>
                     <span class="text">
-                        ${{$user->hourly_rate}} / hr
+                        {{App\School_year::find($upcomingSession->school_year_id)->school_year}}
                     </span>
                     <button class="btn btn-lg btn-outline-primary"
                         data-session-id="{{$upcomingSession->session_id}}">Cancel Session</button>
@@ -590,7 +590,7 @@ min-width-450
 
             @foreach ($tutorRequests as $tutorRequest)
             <table class="table table-hover tutor-requests-table"
-                data-tutor-request-id='{{$tutorRequest->tutor_request_id}}'>
+                data-tutor-request-id='{{$tutorRequest->tutor_request_id}}' data-student-id="{{$tutorRequest->student_id}}">
                 <tbody>
                     <tr>
                         <th scope="row">
@@ -701,7 +701,7 @@ min-width-450
                                 {{$post->post_message}}
                             </td>
                             <td>
-                                <button class="btn btn-lg btn-primary button--small" data-post-id="{{$post->post_id}}">
+                                <button class="btn btn-lg btn-primary button--small" data-post-id="{{$post->post_id}}" onclick="message({{$post->user_id}})">
                                     Send Message
                                 </button>
                             </td>
@@ -793,7 +793,7 @@ min-width-450
         var calendarEl = document.getElementById('calendar');
 
         calendar = new FullCalendar.Calendar(calendarEl, {
-            plugins: ['timeGrid', 'dayGrid', 'interaction', 'bootstrap'],
+            plugins: ['timeGrid', 'interaction', 'bootstrap'],
 
             // default time should be los angeles' time
             timeZone: 'PDT',
@@ -801,7 +801,7 @@ min-width-450
             header: {
                 left: 'prev, next today',
                 center: 'title',
-                right: 'timeGridDay, timeGridWeek, dayGridMonth'
+                right: 'timeGridDay, timeGridWeek'
             },
             contentHeight: 600,
             events: [

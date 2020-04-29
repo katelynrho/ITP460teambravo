@@ -113,3 +113,11 @@ Route::get('/tutor_request/{tutor}', 'tutorRequestController@showMakeTutorReques
 Route::get('/edit_availability', 'tutorRequestController@showEditAvailability')->middleware(['checkLogin']);
 Route::post('/edit_availability', 'tutorRequestController@saveAvailableTime')->middleware(['checkLogin']);
 Route::post('/tutor_request', 'tutorRequestController@makeTutorRequest')->middleware(['checkLogin']);
+
+
+// chatting
+Route::get('/messages', 'chatController@show')->name('chatroom')->middleware(['checkLogin']);
+Route::post('/messages', 'chatController@sendMessage')->middleware(['checkLogin']);
+Route::get('/detailedMessages/{otherUserId}', 'chatController@getMessages')->middleware(['checkLogin']);
+Route::get('/messages/{otherUser}', 'chatController@showChat')->middleware(['checkLogin']);
+

@@ -87,7 +87,7 @@ $('#add-post-container').submit((e) => {
                 $('#filter-form').submit();
             }
             $('#background-cover').hide();
-
+            $('textarea').val('');
         },
         error: function(error) {
             console.log(error);
@@ -145,7 +145,11 @@ $('#filter-form').submit(function(e) {
                             <p>${dateCreated}</p><span>${courseSubjectName}</span>
                         </td>
                         <td class="post-message">${postMsg}</td>
-                        <td><button class="btn btn-lg btn-primary button--small" data-post-id="${postId}">Send Message</button></td>
+                        <td>
+                            <button class="btn btn-lg btn-primary button--small" data-post-id="${postId}" onclick="message(${userId})">
+                                Send Message
+                            </button>
+                        </td>
                     </tr>
                 `;
 
@@ -188,7 +192,7 @@ function showAddPost() {
         'slow'
     );
 
-    $('#add-post-container').height($(window).height() / 2);
+    // $('#add-post-container').height($(window).height() / 2);
 }
 
 
@@ -213,4 +217,7 @@ function viewProfile(id) {
     window.location.href = '/view_profile/' + id + '?from=home';
 }
 
+function message(userId) {
+    window.location.href = '/messages/' + userId;
+}
 

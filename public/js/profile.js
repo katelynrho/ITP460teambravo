@@ -12,13 +12,29 @@ var $window = $(window).on('resize', fitProfileImgHeight).trigger('resize'); //o
 // The tags do not need to be in the database. The autocomplete is just for recommendation
 $(function () {
     var subjectTags = [
+        'HTML/CSS',
         'Calculus',
-        'Mathematics',
-        'Ling',
-        'Business',
-        'Accounting',
+        'Algebra',
+        'Chemistry',
+        'Biology',
         'Computer Science',
-        'Physics'
+        'Computer Security',
+        'Writing',
+        'French',
+        'Economics',
+        'International Relations',
+        'Art History',
+        'Psychology',
+        'Linguistics',
+        'Design',
+        'Mathematics',
+        'UX/UI Design',
+        'Korean',
+        'DSP',
+        'Backend',
+        'Backend Development',
+        'Robotics',
+        'Python'
     ];
     $("#subject").autocomplete({
         source: subjectTags
@@ -26,12 +42,50 @@ $(function () {
 
 
     var courseTags = [
-        'EALC 150',
+        'ITP 104',
+        'ITP 115',
+        'ITP 125',
+        'ITP 301',
+        'ITP 304',
+        'ITP 325',
         'CSCI 103',
-        'COMM 201',
+        'CSCI 104',
+        'MATH 125',
+        'MATH 225',
+        'MATH 245',
+        'ECON 203',
+        'ECON 205',
+        'WRIT 150',
+        'WRIT 340',
+        'PSYC 100',
+        'MUSC 255',
+        'LING 210',
+        'LING 115',
+        'FREN 220',
+        'DES 302',
+        'IR 210',
+        'AHIS 230',
+        'BISC 120',
+        'BISC 220',
+        'CRIT 150',
+        'CTWR 412',
+        'COMM 104',
+        'AME 201',
+        'AME 301',
+        'SFA 111',
+        'EALC 150',
+        'CTWR 411',
+        'DES 102',
+        'CRIT 350',
+        'EE 243',
+        'MATH 114',
         'BUAD 304',
-        'ECON 351',
-        'ECON 352'
+        'ITP 303',
+        'CSCI 201',
+        'CSCI 360',
+        'ITP 380',
+        'CSCI 170',
+        'CSCI 270'
     ];
     $("#course").autocomplete({
         source: courseTags
@@ -42,7 +96,16 @@ $(function () {
         'Patient',
         'Hospital',
         'Lovely',
-        'Cute'
+        'Cute',
+        'Attentive',
+        'Enthusiastic',
+        'Responsible',
+        'Hilarious',
+        'Caring',
+        'Outgoing',
+        'Lovely Boy!',
+        'Extroverted',
+        'Hardworking'
     ];
     $("#characteristic").autocomplete({
         source: characteristicTags
@@ -225,7 +288,7 @@ $('svg.bookmark').click(function() {
 });
 
 $('.search-card img').click(function() {
-    window.location.href = '/view_profile/' + $(this).attr('data-user-id');
+    window.location.href = '/view_profile/' + $(this).attr('data-user-id') + '?from=profile';
 });
 
 
@@ -279,7 +342,7 @@ $('.btn-write-review').click(function() {
         'slow'
     );
 
-    $('#write-review-container').height($(window).height() / 2);
+    // $('#write-review-container').height($(window).height() / 2);
 
     sessionId = $(this).attr('data-session-id');
 
@@ -295,13 +358,13 @@ $('.btn-write-review').click(function() {
 
     let subjectCourse = $(this).parent().find('.subject-course').html();
 
-    if(isTutor) {
+    if(isTutor == 1) {
         reviewContainer.find('.tutor-name').html(currentUserName);
         reviewContainer.find('.student-name').html(selectedUserName);
     }
     else {
         reviewContainer.find('.tutor-name').html(selectedUserName);
-        revviewContainer.find('.student-name').html(currentUserName);
+        reviewContainer.find('.student-name').html(currentUserName);
     }
     reviewContainer.find('.review-header').html('Review ' + selectedUserName + ': ');
     reviewContainer.find('.date').html(date);
@@ -315,6 +378,7 @@ $('.btn-write-review').click(function() {
 $('#write-review-container .btn-cancel').click((e) => {
     e.preventDefault();
     $('#background-cover').hide();
+    $('textarea').val('');
 });
 
 
@@ -357,12 +421,15 @@ $('#write-review-container').submit((e) => {
             toastr.success(successMsg);
 
             $('#background-cover').hide();
+            $('textarea').val('');
 
-            sessionContainer.remove();
+            // dont remove the past session after reviewing it!
 
-            if($('.sessions__container-2 .sessions__info').children().length === 0) {
-                $('.sessions__container-2 .sessions__info').append('<span class="f-16">There are no past sessions yet</span>');
-            }
+            // sessionContainer.remove();
+
+            // if($('.sessions__container-2 .sessions__info').children().length === 0) {
+            //     $('.sessions__container-2 .sessions__info').append('<span class="f-16">There are no past sessions yet</span>');
+            // }
         },
         error: function(error) {
             console.log(error);

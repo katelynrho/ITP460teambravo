@@ -195,9 +195,6 @@ class profileController extends Controller
             $imgURL = $request->file('profile-pic')->store('');
             $user->profile_pic_url = $imgURL;
         }
-        else {
-            $user->profile_pic_url = 'placeholder.png';
-        }
     }
 
     public function viewProfile(Request $request, $viewUserId) {
@@ -207,6 +204,7 @@ class profileController extends Controller
         $viewUser = User::find($viewUserId);
 
         if($currentUser->is_tutor == $viewUser->is_tutor) {
+
             return redirect()->route('home');
         }
 
